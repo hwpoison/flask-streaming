@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% block styles %}{% endblock %}
+	<title> {% block title %}{% endblock %} </title>
+	<link href="{{ url_for('static', filename='/styles/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container-fluid">
+  	<img id="main_logo" src="{{ url_for('static', filename='/icons/main_logo.svg') }}"/ class="pr-3">
+    <a class="navbar-brand" href="/">justPlay!</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Más
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#">Video Aleatorio</a></li>
+            <li><a class="dropdown-item" href="#">Añadir Directorio</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Acerca de...</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">go!</button>
+      </form>
+    </div>
+  </div>
+</nav>
+	<div id="content">
+		{% block content %}{% endblock %}
+	</div>
+<body>
+<center>
+	<footer class="page-footer font-small blue pt-4">
+	  <div class="footer-copyright text-center py-3">© 2021 Copyright:
+	    <a href="#"> hwpoison</a>
+	  </div>
+	</footer>
+</center>
+<script src="{{ url_for('static', filename='/styles/bootstrap/js/bootstrap.min.js') }}"></script>
+<style>
+footer {
+	font-family: Arial;
+}
+body {
+	background-color: #f0faf8;
+}
+#main_logo {
+	transition: 0.5s;	
+}
+#main_logo:hover {
+	transition: 0.9s;
+	transform: rotate(360deg);
+}
+</style>
+<script>
+      var canvas = document.getElementById('icon_');
+      var context = canvas.getContext('2d');
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var radius = 70;
+
+      context.beginPath();
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = 'green';
+      context.fill();
+      context.lineWidth = 5;
+      context.strokeStyle = '#003300';
+      context.stroke();
+</script>
+</html>

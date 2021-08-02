@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{% block title %}justPLay!{% endblock %}
+
+{% block content %}
+<div class="row row-cols-1 row-cols-md-2 g-4">
+	  	{% for id, file in files.items() %}
+	    <div class="col">
+	     	<div class="card">
+			  <img src="/api/v1/video/preview/{{ file['thumb'] }}" width="50" class="card-img-top rounded-top" alt="...">
+			  <div class="card-body">
+			    <h5 class="card-title">{{ file['name'] }}</h5>
+			    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+			    <a href="/play/{{ id }}" class="btn btn-primary">Mirar Ahora</a>
+			  </div>
+			</div>
+	  	</div>
+	  {% endfor %}
+</div>
+<style> 
+#main_title {
+
+}
+</style>
+{% endblock %}

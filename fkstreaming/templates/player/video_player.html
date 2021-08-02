@@ -1,0 +1,75 @@
+{% extends "index.html" %}
+{% block title %}{{ video_info['name'] }}{% endblock %}
+{% block styles %}
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='/player/css/moovie.css') }}">
+<div id="video_container">
+	<center>
+	<video id="video_player">
+		   <source src="/api/v1/video/stream/{{ video_info['id'] }}" type="video/flv"> 
+		   <track kind="captions" label="Spanish" srclang="es" src="/captions/sub.vtt">
+	</video>
+</center>
+</div>
+<video id="videoElement"></video>
+<style>
+@media (min-width:992px) {
+   #video_container {
+   	display: block;
+     	margin-left: auto;
+     	margin-right: auto;
+     	width: 50%;
+      padding: 5px;
+   }
+}
+
+</style>
+<script src="{{ url_for('static', filename='/player/js/moovie.js') }}"></script>
+<script src="{{ url_for('static', filename='/js/flv.js') }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+   var demo = new Moovie({
+     selector: "#video_player",
+     dimensions: {
+          width: "100%"
+     },
+     config:{
+        i18n : {
+            play : "(Play:Pausa)",
+            mute : "(Silenciar:Desmutear)",
+            subtitles : "(Activar:Desactivar) Subtitulos",
+            config : "Configuración",
+            fullscreen : "(Activar:Salir) en pantalla completa",
+            main_topic: "Configuración:",
+            main_caption: "Subtitulos",
+            main_offset: "Retraso de Subtitulos",
+            main_speed: "Velocidad",
+            main_disabled: "Desactivado",
+            main_default: "Defecto",
+            caption_topic: "Subtitulos:",
+            caption_back: "Atrás",
+            caption_load: "Cargar desde el dispositivo",
+            offset_topic: "Ajustar retardo de Subtitulos",
+            speed_topic: "Ajustar velocidad"
+         }
+     },
+     icons: {
+        path: "{{ url_for('static', filename='/player/icons/') }}"
+     }
+   });
+});
+
+/*
+if (flvjs.isSupported()) {
+        var videoElement = document.getElementById('video_player');
+        var flvPlayer = flvjs.createPlayer({
+            type: 'flv',
+            url: '/api/video/{{ video_file }}'
+        });
+        flvPlayer.attachMediaElement(videoElement);
+        flvPlayer.load();
+        flvPlayer.play();
+    }*/
+</script>
+{% endblock %}
