@@ -15,8 +15,6 @@ def create_app(test_config=None):
     )
 
     # register blueprints
-    #app.register_blueprint(get_video, url_prefix='/api')
-    #app.register_blueprint(find_content, url_prefix='/api')
     app.register_blueprint(player)
     app.register_blueprint(home)
 

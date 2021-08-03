@@ -35,6 +35,7 @@ class videoInfo(Resource):
 	def get(self, video_id):
 		videos = file_manage.get_videos()
 		if file:=videos.get(video_id):
+			print(file)
 			return jsonify(file)
 		else:
 			return jsonify({'info':'video not found!'})

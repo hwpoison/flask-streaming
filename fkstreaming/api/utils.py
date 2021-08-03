@@ -1,5 +1,4 @@
 import webvtt
-import os, re
 import random
 from pathlib import Path
 import ffmpeg
@@ -9,71 +8,68 @@ webvtt = webvtt.from_srt('videos/sub.srt')
 webvtt.save()
 """
 
+default_dirs = ['videos', 'C:\\Users\\Guille\\Desktop\\videos']
+
 class GetVideos():
 	def __init__(self):
-		self.ROOT_FOLDER = "fkstreaming/videos/"
-		self.THUMBS_DIR = f'fkstreaming/videos/thumbs/'
+		self.ROOT_PATH = Path("../")
+		self.VIDEO_DIR  = 'videos'
+		self.THUMBS_DIR = 'videos/thumbs'
 
 	def update(self):
-		self.THUMBS_DIR = f'{self.ROOT_FOLDER}thumbs/'
+		#self.THUMBS_DIR = f'{self.ROOT_PATH}thumbs/'
+		pass
 
 	def filter_extension(self, entry):
 		extensions = {
-			'video':['mp4','avi', 'flv'],
-			'music':['mp3'],
-			'subtitle':['str','vvt']
+			'video':['.mp4','.avi', '.flv'],
+			'music':['.mp3'],
+			'subtitle':['.str','.vvt']
 		}
 		for type, formats in extensions.items():
-			pattern = '|'.join(formats)
-			c = re.match("([a-zA-Z0-9].+)\.[%s]{3}$"%pattern, entry)
-			if c:
-				return type, c.string
+			if entry.suffix in formats:
+				return type, entry
 
-	def get_files(self): 
-		# scan files in path and return name and filetypes
-		entries = Path(self.ROOT_FOLDER)
+	def get_files(self, path=None): 
+		if not path:
+			path = self.ROOT_PATH.joinpath(self.VIDEO_DIR)
 		found = {
-			'path': self.ROOT_FOLDER,
+			'path': path,
 			'files': {}
 		}
-		for entry in entries.iterdir():
-			if entry.is_file() and (file_info:=self.filter_extension(entry.name)):
+		# scan files in path and return name and filetypes
+		for entry in path.iterdir():
+			if entry.is_file() and (file_info:=self.filter_extension(entry)):
 				if not found['files'].get(file_info[0]):
 					found['files'][file_info[0]] = []
+				
 				found['files'][file_info[0]].append(file_info[1])
 		return found
 
-	def extract_filename(self, file_name):
-		filename =  re.findall(".+/(.+)\..{3}$", file_name)
-		if filename:
-			return filename[0] 
-		else:
-			return False
-
-	def generate_thumbail(self, in_file):
+	def generate_thumbail(self, file_path):
+		thumbs_path = self.ROOT_PATH.joinpath(self.THUMBS_DIR)
+		thumbnail_name = f'{file_path.stem}_thumb.jpg'
+		thumb_full_path = thumbs_path.joinpath(thumbnail_name)
 		# first, check if thumbils actual exists
-		file_name = self.extract_filename(in_file)
-		file_name = f"{file_name}_thumb.jpg"
-		out_name = f"{self.THUMBS_DIR}{file_name}"
-		if os.path.exists(out_name):
-			return file_name
+		if Path(thumbs_path.joinpath(thumbnail_name)).exists():
+			return thumbnail_name
 
 		# now generate video thumbail form random frame
-		print(f"[+]Generating thumbail for {in_file}")
+		print(f'[+]Generating thumbail for {file_path}')
+		probe = self.get_video_probe(file_path)
+		duration = probe['format']['duration']
+		rtime = random.randint(0, int(float(duration))//2)
 		try:
-			probe = self.get_video_probe(in_file)
-			duration = probe['format']['duration']
-			rtime = random.randint(0, int(float(duration))//2)
 			(
 			    ffmpeg
-			    .input(in_file, ss=rtime)
+			    .input(file_path, ss=rtime)
 			    .filter('scale', 500, -1)
-			    .output(out_name, vframes=1) # agregar generador nombre
+			    .output(str(thumb_full_path), vframes=1) # agregar generador nombre
 			    .overwrite_output()
 			    .global_args("-nostats")
 			    .run()
 			)
-			return file_name#out_name
+			return thumbnail_name#out_name
 		except:
 			return 'generic_thumb.jpg'
 
@@ -82,29 +78,33 @@ class GetVideos():
 		return probe
 
 	def get_videos(self):
-		videos = {
-				#1 : { 'name':string , 'thumb':stringpath}	
-		}
+		videos = {}
 		files =  self.get_files()
 		if not files['files']:
-			return {}
-			
+			return {}		
 		path = files['path']
-		for id, video_name in enumerate(files['files']['video']):
+		for id, file in enumerate(files['files']['video']):
 			videos[id] = {
 				'id': id,
-				'name':video_name,
-				'stream':video_name,
-				'thumb':self.generate_thumbail(path+video_name)
+				'name':file.name,
+				'stream':str(file),
+				'thumb':self.generate_thumbail(path.joinpath(file.name))
 			}
 		return videos
 
 
 if __name__ == '__main__':
 	gett = GetVideos()
-	gett.ROOT_FOLDER = "../videos/"
+	#gett.ROOT_PATH = "../videos/"
 	gett.update()
-	gett.get_videos()
+	v = gett.get_videos()
+	print(v)
+	
+	"""pwd = Path('../videos')
+	for e in pwd.iterdir():
+		print(e.suffix)
+"""
 else:
 	file_manage = GetVideos()
+	file_manage.ROOT_PATH = Path('./fkstreaming/')
 
