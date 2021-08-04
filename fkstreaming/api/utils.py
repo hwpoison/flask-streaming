@@ -11,12 +11,14 @@ webvtt.save()
 class GetVideos():
 	def __init__(self):
 		self.ROOT_PATH = Path.cwd().joinpath('fkstreaming')
-		print(self.ROOT_PATH)
 		self.VIDEO_DIR  = 'videos'
 		self.THUMBS_DIR = 'videos/thumbs'
-		self.DEFAULTS_DIRS = [self.ROOT_PATH.joinpath(self.VIDEO_DIR),
-		 'C:\\Users\\Guille\\Desktop\\videos',
-		 'C:\\Users\\Guille\\Desktop\\downloads\\Los Simpsons\\Temporada 07'] 
+
+		self.user_dirs = [
+				self.ROOT_PATH.joinpath(self.VIDEO_DIR),
+		 		'C:\\Users\\Guille\\Desktop\\videos',
+		 		'C:\\Users\\Guille\\Desktop\\downloads\\Los Simpsons\\Temporada 07'
+		] 
 
 	def update(self):
 		#self.THUMBS_DIR = f'{self.ROOT_PATH}thumbs/'
@@ -35,7 +37,7 @@ class GetVideos():
 
 	def get_dir_files(self):
 		all_files = []
-		default_dirs = map(Path, self.DEFAULTS_DIRS)
+		default_dirs = map(Path, self.user_dirs)
 		for files in default_dirs:
 			all_files.extend(files.glob("**/*.*"))
 		return all_files
@@ -103,5 +105,5 @@ if __name__ == '__main__':
 	gett.ROOT_PATH = Path("../")
 else:
 	file_manage = GetVideos()
-	file_manage.ROOT_PATH = Path('./fkstreaming/')
+	
 

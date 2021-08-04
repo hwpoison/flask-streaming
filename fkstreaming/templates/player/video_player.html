@@ -6,8 +6,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='/player/css/moovie.css') }}">
 <div id="video_container">
 	<center>
-	<video id="video_player">
-		   <source src="/api/v1/video/stream/{{ video_info['id'] }}" type="video/flv"> 
+      <!-- FIX POSTER URL -->
+	<video id="video_player" poster="">
+		   <source src="/api/v1/video/stream/{{ video_info['id'] }}" type="video/mp4"> 
 		   <track kind="captions" label="Spanish" srclang="es" src="/captions/sub.vtt">
 	</video>
 </center>
