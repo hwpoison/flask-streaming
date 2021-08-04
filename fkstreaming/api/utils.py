@@ -8,19 +8,21 @@ webvtt = webvtt.from_srt('videos/sub.srt')
 webvtt.save()
 """
 
-default_dirs = ['videos', 'C:\\Users\\Guille\\Desktop\\videos']
-
 class GetVideos():
 	def __init__(self):
-		self.ROOT_PATH = Path("../")
+		self.ROOT_PATH = Path.cwd().joinpath('fkstreaming')
+		print(self.ROOT_PATH)
 		self.VIDEO_DIR  = 'videos'
 		self.THUMBS_DIR = 'videos/thumbs'
+		self.DEFAULTS_DIRS = [self.ROOT_PATH.joinpath(self.VIDEO_DIR),
+		 'C:\\Users\\Guille\\Desktop\\videos',
+		 'C:\\Users\\Guille\\Desktop\\downloads\\Los Simpsons\\Temporada 07'] 
 
 	def update(self):
 		#self.THUMBS_DIR = f'{self.ROOT_PATH}thumbs/'
 		pass
 
-	def filter_extension(self, entry):
+	def detect_file_type(self, entry):
 		extensions = {
 			'video':['.mp4','.avi', '.flv'],
 			'music':['.mp3'],
@@ -28,22 +30,26 @@ class GetVideos():
 		}
 		for type, formats in extensions.items():
 			if entry.suffix in formats:
-				return type, entry
+				return type
+		return False
 
-	def get_files(self, path=None): 
-		if not path:
-			path = self.ROOT_PATH.joinpath(self.VIDEO_DIR)
+	def get_dir_files(self):
+		all_files = []
+		default_dirs = map(Path, self.DEFAULTS_DIRS)
+		for files in default_dirs:
+			all_files.extend(files.glob("**/*.*"))
+		return all_files
+
+	def scan_dirs(self, path=None): 
 		found = {
-			'path': path,
-			'files': {}
+
 		}
-		# scan files in path and return name and filetypes
-		for entry in path.iterdir():
-			if entry.is_file() and (file_info:=self.filter_extension(entry)):
-				if not found['files'].get(file_info[0]):
-					found['files'][file_info[0]] = []
-				
-				found['files'][file_info[0]].append(file_info[1])
+		all_files = self.get_dir_files()
+		for file_path in all_files:
+			type = self.detect_file_type(file_path)
+			if not found.get(type):
+				found[type] = []
+			found[type].append(file_path)
 		return found
 
 	def generate_thumbail(self, file_path):
@@ -55,11 +61,11 @@ class GetVideos():
 			return thumbnail_name
 
 		# now generate video thumbail form random frame
-		print(f'[+]Generating thumbail for {file_path}')
-		probe = self.get_video_probe(file_path)
-		duration = probe['format']['duration']
-		rtime = random.randint(0, int(float(duration))//2)
 		try:
+			print(f'[+]Generating thumbail for {file_path}')
+			probe = self.get_video_probe(file_path)
+			duration = probe['format']['duration']
+			rtime = random.randint(0, int(float(duration))//2)
 			(
 			    ffmpeg
 			    .input(file_path, ss=rtime)
@@ -71,7 +77,7 @@ class GetVideos():
 			)
 			return thumbnail_name#out_name
 		except:
-			return 'generic_thumb.jpg'
+			return 'generic_thumb.png'
 
 	def get_video_probe(self, filename):
 		probe = ffmpeg.probe(filename)
@@ -79,31 +85,22 @@ class GetVideos():
 
 	def get_videos(self):
 		videos = {}
-		files =  self.get_files()
-		if not files['files']:
-			return {}		
-		path = files['path']
-		for id, file in enumerate(files['files']['video']):
+		files =  self.scan_dirs()
+		if not files.get('video'):
+			return {}
+		for id, file in enumerate(files['video']):
 			videos[id] = {
 				'id': id,
-				'name':file.name,
-				'stream':str(file),
-				'thumb':self.generate_thumbail(path.joinpath(file.name))
+				'file_name':str(file.name),
+				'file_path':str(file.parent),
+				'thumb':self.generate_thumbail(file)
 			}
 		return videos
 
 
 if __name__ == '__main__':
 	gett = GetVideos()
-	#gett.ROOT_PATH = "../videos/"
-	gett.update()
-	v = gett.get_videos()
-	print(v)
-	
-	"""pwd = Path('../videos')
-	for e in pwd.iterdir():
-		print(e.suffix)
-"""
+	gett.ROOT_PATH = Path("../")
 else:
 	file_manage = GetVideos()
 	file_manage.ROOT_PATH = Path('./fkstreaming/')

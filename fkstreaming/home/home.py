@@ -1,5 +1,3 @@
-import os
-
 from flask import Blueprint, render_template, abort, send_from_directory, jsonify
 from jinja2 import TemplateNotFound
 

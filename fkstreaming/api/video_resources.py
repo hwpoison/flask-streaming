@@ -8,9 +8,10 @@ class videoStream(Resource):
 		current_app.logger.info(f'[+]Sending {video_id}')
 		videos = file_manage.get_videos()
 		if file:=videos.get(video_id):
+			print(file)
 			return send_from_directory(
-								directory="videos/",
-								path=file['name'])
+								directory=file['file_path'],
+								path=     file['file_name'])
 		else:
 			return jsonify({'info':'parametros incorrectos'})
 

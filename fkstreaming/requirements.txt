@@ -1,5 +1,6 @@
 webvtt-py
 flask
+flask_restful
 ffmpeg_streaming
 ffprobe 
 ffmpeg-python
