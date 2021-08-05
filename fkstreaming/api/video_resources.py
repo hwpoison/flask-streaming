@@ -1,42 +1,43 @@
-from flask import jsonify, request, send_from_directory, current_app
+from flask import jsonify, request, send_from_directory, current_app, abort
 from flask_restful import Resource
 
+from fkstreaming.api.errors import MediaFileNotFound, MediaThumbnailNotFound, InternalServerError
 from fkstreaming.api.utils import file_manage
+
 
 class videoStream(Resource):
 	def get(self, video_id):
-		current_app.logger.info(f'[+]Sending {video_id}')
-		videos = file_manage.get_videos()
+		current_app.logger.info(f'[+]Sending {video_id}\n')
+		videos = file_manage.get_files_by_type('video')
 		if file:=videos.get(video_id):
-			print(file)
 			return send_from_directory(
 								directory=file['file_path'],
 								path=     file['file_name'])
 		else:
-			return jsonify({'info':'parametros incorrectos'})
+			raise MediaFileNotFound
 
-class videoPreview(Resource):
+class videoThumb(Resource):
 	def get(self, img_name):
 		if img_name:
 			return send_from_directory(
 								directory="videos/thumbs/",
 								path=img_name)
 		else:
-			return jsonify({'info':'image not found'})
+			raise MediaThumbnailNotFound
 
 class videoAll(Resource):
 	def get(self):
-		all_videos = file_manage.get_videos()
-		if all_videos:
-			return jsonify(all_videos)
+		videos = file_manage.get_files_by_type('video')
+		if videos:
+			return jsonify(videos)
 		else:
-			return jsonify({'info':'video not found!'})	
+			return MediaFileNotFound
+
 
 class videoInfo(Resource):
 	def get(self, video_id):
-		videos = file_manage.get_videos()
+		videos = file_manage.get_files_by_type('video')
 		if file:=videos.get(video_id):
-			print(file)
 			return jsonify(file)
 		else:
-			return jsonify({'info':'video not found!'})
+			raise MediaFileNotFound

@@ -6,9 +6,9 @@
 	  	{% for id, file in files.items() %}
 	    <div class="col">
 	     	<div class="card">
-			  <img src="/api/v1/video/preview/{{ file['thumb'] }}" width="50" class="card-img-top rounded-top" alt="...">
+			  <img src="/api/v1/video/thumb/{{ file['thumb'] }}" width="50" class="card-img-top rounded-top" alt="...">
 			  <div class="card-body">
-			    <h5 class="card-title">{{ file['file_name'] }}</h5>
+			    <h5 class="card-title">{{ file['title'] }}</h5>
 			    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
 			    <a href="/play/{{ id }}" class="btn btn-primary">Mirar Ahora</a>
 			  </div>
