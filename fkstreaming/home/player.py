@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort, send_from_directory
 from jinja2 import TemplateNotFound
 
-from fkstreaming.api.utils import file_manage
+from fkstreaming.api.utils import media_manage
 
 
 player = Blueprint('player', __name__,
@@ -9,8 +9,8 @@ player = Blueprint('player', __name__,
 
 @player.route('/play/<int:video_id>', methods=['GET'])
 def getPlayer(video_id):
-    videos = file_manage.get_files_by_type('video')
-    if video:= videos.get(video_id):
-        return render_template('player/video_player.html', video_info=video)
+    info = media_manage.get_video_info(video_id)
+    if info:
+        return render_template('player/video_player.html', video_info=info)
     else:
         abort(404)

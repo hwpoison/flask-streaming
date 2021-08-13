@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+{% block title %} justPlay! - {{ folder['name'] }} {% endblock %}
+
+{% block content %}
+<p style="color:gray;font-family: arial; font-size: 20px;padding-left: 20px;margin-top: 20px"> {{ folder['name'] }} </p>
+<div class="row row-cols-1 row-cols-md-4 g-4">
+		{% for file in folder['files'] %}
+	    <div class="col">
+	     	<div class="card">
+			  <img src="/api/v1/videos/{{ file['id'] }}/thumb" width="50" class="card-img-top rounded-top" alt="...">
+			  <div class="card-body">
+			    <h5 class="card-title">{{ file['title'] }}</h5>
+			    <p class="card-text"></p>
+			    <a href="/play/{{ file['id'] }}" class="btn btn-primary">Mirar Ahora</a>
+			  </div>
+			</div>
+	  	</div>
+	  	{% endfor %}
+</div>
+
+{% for folder_id, content in folder['subdirs'].items() %}
+<hr>
+<p style="color:gray;font-family: arial; font-size: 20px;padding-left: 20px;margin-top: 20px"> {{ content['name'] }} </p>
+<div class="row row-cols-1 row-cols-md-4 g-4">
+				{% for file in content['file_samples'] %}
+			    <div class="col">
+			     	<div class="card">
+					  <img src="/api/v1/videos/{{ file['id'] }}/thumb" width="50" class="card-img-top rounded-top" alt="...">
+					  <div class="card-body">
+					    <h5 class="card-title">{{ file['title'] }}</h5>
+					    <p class="card-text"></p>
+					    <a href="/play/{{ file['id'] }}" class="btn btn-primary">Mirar Ahora</a>
+					  </div>
+					</div>
+			  	</div>
+			  	{% endfor %}
+			  	<div>
+			  		<center>
+			  		<div class="col">
+			     	<div class="card" >
+					  <div class="card-body">
+					    <h5 class="card-title"></h5>
+					    <p class="card-text"></p>
+					    <a href="/{{ folder_id }}" class="btn btn-primary">Ver más de esto... </a>
+					  </div>
+					</div>
+			  	</div>
+			  </center>
+			  	</div>
+		</div>
+		{% endfor %}
+{% endblock %}

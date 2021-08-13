@@ -2,20 +2,39 @@
 {% block title %}justPlay!{% endblock %}
 
 {% block content %}
+<!-- folders loop -->
+{% for folder_id, folder in folders.items() %}
+<hr>
+<p style="color:gray;font-family: arial; font-size: 20px;padding-left: 20px;margin-top: 20px"> {{ folder['name'] }} </p>
 <div class="row row-cols-1 row-cols-md-4 g-4">
-	  	{% for id, file in files.items() %}
+		<!-- files loop -->
+		{% for video_file in folder['file_samples'] %}
 	    <div class="col">
 	     	<div class="card">
-			  <img src="/api/v1/video/thumb/{{ file['thumb'] }}" width="50" class="card-img-top rounded-top" alt="...">
+			  <img src="/api/v1/videos/{{ video_file['id'] }}/thumb" width="50" class="card-img-top rounded-top" alt="...">
 			  <div class="card-body">
-			    <h5 class="card-title">{{ file['title'] }}</h5>
-			    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-			    <a href="/play/{{ id }}" class="btn btn-primary">Mirar Ahora</a>
+			    <h5 class="card-title">{{ video_file['title'] }}</h5>
+			    <p class="card-text"></p>
+			    <a href="/play/{{ video_file['id'] }}" class="btn btn-primary">Mirar Ahora</a>
 			  </div>
 			</div>
 	  	</div>
-	  {% endfor %}
+	  	{% endfor %}
+	  	<div>
+	  		<center>
+	  		<div class="col">
+	     	<div class="card" >
+			  <div class="card-body">
+			    <h5 class="card-title"></h5>
+			    <p class="card-text"></p>
+			    <a href="/{{ folder_id }}" class="btn btn-primary">Ver más de {{ folder['name'] }} </a>
+			  </div>
+			</div>
+	  	</div>
+	  </center>
+	  	</div>
 </div>
+{% endfor %}
 <style> 
 #main_title {
 
