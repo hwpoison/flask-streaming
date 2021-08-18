@@ -1,0 +1,157 @@
+{% extends "index.html" %}
+{% block title %}{{ video_info['title'] }}{% endblock %}
+{% block styles %}
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/BMSVieira/moovie.js@latest/css/moovie.min.css">
+<div id="video_container">
+	<center>
+	  <video id="video_player" poster="">
+			<track kind="captions" label="Spanish" srclang="es" src="/streami/subs.srt">
+	  </video>
+	  <script src="https://cdn.jsdelivr.net/gh/BMSVieira/moovie.js@latest/js/moovie.min.js"></script>
+	  <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.js"></script>
+</center>
+<div id="stream_id" style="display:none">{{ video_info['stream_id'] }}
+</div>
+<style>
+@media (min-width:992px) {
+   #video_container {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 50%;
+   }
+}
+</style>
+<script>
+   // dock a video quality control menu to moovie player
+   class _Moovie_QualitySelector {
+	constructor(options) {
+	
+		const defaults = {
+			reference : 'default_player',
+			hls_instance: undefined
+		};		
+
+		this.reference = options.reference || defaults.reference;
+		this.hls_instance = options.hls_instance || defaults.sources;
+	
+		this.mooviePlayer = this.reference;
+		this.randomID = this.mooviePlayer.randomID
+		/*
+		** Plugin Structure
+		*/
+
+		var InitModule = this.InitModule = function InitModule() {
+		   this.setupMenu()
+		}
+
+		// Setup
+		this.InitModule();
+	  }
+	  addAdjacent(to, element){
+			document.getElementById(to).insertAdjacentHTML('beforeend', element);
+	  }
+	  setDisplay(element, value){
+	  		document.getElementById(element).style.display = value;
+	  }
+	  setupMenu() {
+		 /* add button to main submenu */
+		 let mainmenu_button = "<li id='qselector_submenu_button'><span>"+ 'Calidad' +"</span><span class='option_submenu' id='option_submenu_actual_level_" + this.randomID + "'></span></li>"
+		 this.mooviePlayer.moovie_el_submain.insertAdjacentHTML('beforeend', mainmenu_button)
+		 /* submenu content */
+		 let submenu = "<ul style='display:none;' id='moovie_submenu_qselect_"+this.randomID+"'></ul>"
+		 
+		 /* load all available levels quality */
+		 document.getElementById('moovie_submenu_'+this.randomID).insertAdjacentHTML('beforeend', submenu)
+		  this.hls_instance.levels.forEach( (representation, level_index )=> {
+				this.addAdjacent("moovie_submenu_qselect_"+this.randomID, "<li class='set_quality' id='button_quality_"+ level_index + "'</span>"+ representation.attrs.NAME + "p</li>")
+				document.getElementById('button_quality_'+level_index).addEventListener("click", ()=>{
+			   	this.hls_instance.currentLevel = level_index;
+			   	this.mooviePlayer.Submenu("toggleSubmenu")
+			})
+		  })
+
+
+		 /* submenu events */
+		 let menu_button = document.getElementById('qselector_submenu_button')
+		 menu_button.addEventListener("click", ()=>{
+			   this.mooviePlayer.moovie_el_submain.style.display = "none"
+			   this.setDisplay("moovie_submenu_qselect_"+this.randomID, "block");
+			})
+		
+		 this.mooviePlayer.moovie_el_video.addEventListener("mouseleave", ()=>{
+			this.setDisplay("moovie_submenu_qselect_"+this.randomID, "none");
+			this.mooviePlayer.Submenu("CAll");
+
+		 })
+		 this.mooviePlayer.control_buttons.config.addEventListener("click", ()=>{
+			document.getElementById('option_submenu_actual_level_'+this.randomID).innerText = this.hls_instance.levels[this.hls_instance.currentLevel].attrs.NAME + 'p'
+			this.setDisplay("moovie_submenu_qselect_"+this.randomID, "none");
+		 })
+	  }
+   }
+
+   var mainPlayer = new Moovie({
+	 selector: "#video_player",
+	 dimensions: {
+		  width: "100%"
+	 },
+	 config:{
+		i18n : {
+			play : "(Play:Pausa)",
+			mute : "(Silenciar:Desmutear)",
+			subtitles : "(Activar:Desactivar) Subtitulos",
+			config : "Configuración",
+			fullscreen : "(Activar:Salir) en pantalla completa",
+			main_topic: "Configuración:",
+			main_caption: "Subtitulos",
+			main_offset: "Retraso Subs",
+			main_speed: "Velocidad",
+			main_disabled: "Desactivado",
+			main_default: "Defecto",
+			caption_topic: "Subtitulos:",
+			caption_back: "Atrás",
+			caption_load: "Cargar desde el dispositivo",
+			offset_topic: "Ajustar retardo de Subtitulos",
+			speed_topic: "Ajustar velocidad"
+		 }
+	 },
+	 icons: {
+		path: "{{ url_for('static', filename='/player/icons/') }}"
+	 }
+   });
+   var levelSelector = undefined;
+	mainPlayer.video.addEventListener("loadeddata", (event)=>{
+   	mainPlayer.currentTime = 0 // set player from time 0
+   })
+   var stream_url = '/api/v1/videos/{{ video_info['id'] }}/stream/start'
+   /* hls support */
+   if (Hls.isSupported()) {
+	 var hls = new Hls();
+	  hls.attachMedia(mainPlayer.video)
+	  hls.loadSource(stream_url);
+	  hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+	  		hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+	  			if(levelSelector === undefined){
+	  				levelSelector = new _Moovie_QualitySelector({reference: mainPlayer,hls_instance: hls});
+	  			}
+	  		});
+	  		hls.on(Hls.Events.ERROR, function(event, data){
+				if(data.type == "networkError"){
+							// trying to get manifest if it is not available at the moment
+			  				setTimeout(()=>{
+			  					hls.loadSource(stream_url);},5000)
+			  	}
+	 		})  		
+		});
+}
+
+// provisory solution for finish server side encoding
+window.addEventListener('beforeunload', function (e) {
+   e.preventDefault();
+   fetch("/api/v1/videos/stream/finish")
+});
+</script>
+{% endblock %}

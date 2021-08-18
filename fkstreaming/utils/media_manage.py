@@ -3,7 +3,6 @@ import configparser
 import time
 import ffmpeg
 import webvtt
-from ffprobe import FFProbe
 from pathlib import Path
 
 """
@@ -86,6 +85,9 @@ class MediaManager():
 	
 	def update_index(self): # get all dirs
 		root_dirs = self.load_config_file()
+		if len(root_dirs) == 1:
+			self.dirs = {}
+			
 		all_dirs = []
 		print("[+]Updating Index")
 		# scan all dirs
@@ -111,16 +113,16 @@ class MediaManager():
 					'path':file
 				}
 				files.append(id)
-
-			# set folder info
-			self.dirs[dir] = {
-					'id': idx,
-					'name': dir.name,
-					'files': files,
-					'is_root': is_root,
-					'st':  dir.stat()
-			}
-			self.index[idx] = dir
+			if len(files) > 0:
+				# set folder info
+				self.dirs[dir] = {
+						'id': idx,
+						'name': dir.name,
+						'files': files,
+						'is_root': is_root,
+						'st':  dir.stat()
+				}
+				self.index[idx] = dir
 
 		return True 
 
@@ -161,7 +163,7 @@ class MediaManager():
 		}
 		# generate folder preview sample
 		for sdir in self.walk_dir(path):
-			if sdir != path:
+			if sdir != path and sdir in self.dirs:
 				dir_idx = self.dirs[sdir]
 				file_samples = self.sample_list(dir_idx['files']) 
 				folder['subdirs'][dir_idx['id']] =  {
@@ -209,6 +211,6 @@ class MediaManager():
 if __name__ == '__main__':
 	get = MediaManager()
 else:
-	media_manage = MediaManager()
-	media_manage.root_path = media_manage.root_path.joinpath('fkstreaming')
-	media_manage.update_index()
+	media_manager = MediaManager()
+	media_manager.root_path = media_manager.root_path.joinpath('fkstreaming')
+	media_manager.update_index()
