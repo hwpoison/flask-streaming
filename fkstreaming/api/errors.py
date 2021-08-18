@@ -2,13 +2,16 @@ from werkzeug.exceptions import HTTPException
 
 
 class MediaFileNotFound(HTTPException):
-	pass
+    pass
 
 class MediaThumbnailNotFound(HTTPException):
-	pass
+    pass
 
 class InternalServerError(HTTPException):
-	pass
+    pass
+    
+class AuthenticationError(HTTPException):
+    pass
 
 errors = {
     'MediaFileNotFound': {
@@ -20,7 +23,11 @@ errors = {
         'status': 404,
     },
     'InternalServerError': {
-    	'message': 'Internal Server Error',
-    	'status': 500
+        'message': 'Internal Server Error',
+        'status': 500
+    },
+    'AuthenticationError': {
+        'message': 'Authentication Token require!',
+        'status': 403
     }
 }
