@@ -14,10 +14,8 @@ api.add_resource(videoInfo,             '/videos/<int:id>')             # get vi
 api.add_resource(videoThumb,            '/videos/<int:id>/thumb') # get video thumbnail
 api.add_resource(videoDownload,         '/videos/<int:id>/download') # get video file
 api.add_resource(videoFolder,           '/videos/folders/<int:folder_id>') # get video folder 
-
 # stream endpoints
 api.add_resource(videoStream,           '/videos/<int:id>/stream/start') # init stream/ get manifiest
 api.add_resource(videoStreamSegment,    '/videos/<int:id>/stream/<segment_name>') # getsgment
 api.add_resource(finishStream,          '/videos/stream/finish') # finish stream
 api.add_resource(killAll,               '/killall') # finish all sever encoding procs.
-

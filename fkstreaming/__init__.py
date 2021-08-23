@@ -1,15 +1,16 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from flask_restful import Api
 from flask import render_template
 from fkstreaming.home.home import home
 from fkstreaming.api.api import content_v1
 from fkstreaming.home.player import player
 
-
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app)
     app.config.from_mapping(
         SECRET_KEY='dev',
     )

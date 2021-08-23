@@ -1,12 +1,46 @@
+from pathlib import Path
 import sys, datetime, random
 from threading import Thread
-from pathlib import Path
 
+import ffmpeg
 import ffmpeg_streaming
 from ffmpeg_streaming import Formats, Bitrate, Representation, Size
 
+class ffmpegUtils:
+    @staticmethod
+    def probe(input_file : Path):
+        try:
+            return ffmpeg.probe(input_file)
+        except:
+            print(f"[+] Error to get probe from { input_file }")
 
-buffer_dir = 'buffer/'
+    @staticmethod
+    def generate_thumbail(input_file : Path, destine : Path):
+        """ takes a video path and generate and save a thumbnail """ 
+        
+        thumbnail_name = f'{input_file.stem}_thumb.jpg'
+        thumb_full_path = destine.joinpath(thumbnail_name)
+        # first, check if thumbils actual exists
+        if Path(destine.joinpath(thumbnail_name)).exists():
+            return thumbnail_name
+        # now generate video thumbail form random frame
+        try:
+            probe = ffmpegUtils.probe(input_file)
+            print(probe)
+            duration = probe['format']['duration']
+            rtime = random.randint(0, int(float(duration))//2)
+            print(f'[+]Generating thumbail for {input_file}')
+            (
+                ffmpeg
+                .input(input_file, ss=rtime)
+                .filter('scale', 500, -1)
+                .output(str(thumb_full_path), vframes=1)
+                .overwrite_output()
+                .run()
+            )
+            return thumbnail_name#out_name
+        except:
+            return 'generic_thumb.png'
 
 class encodeThread(Thread):
     def __init__(self, file_path : Path, temp_dir : Path, name : str):
@@ -15,7 +49,7 @@ class encodeThread(Thread):
         self.file_name = name
         self.temp_dir = temp_dir
         self.interrupt = False
-        self.print_monitor = True
+        self.print_monitor = False
         self.default_size = ['24p','144p', '360p']
         self.sizes = {
                 '24p':  Representation(Size(16, 24), Bitrate(25 * 1024, 9 * 1024)),

@@ -3,9 +3,9 @@ from flask_restful import Resource
 import os 
 
 from fkstreaming.api.errors import MediaFileNotFound, MediaThumbnailNotFound, InternalServerError, AuthenticationError
-from fkstreaming.utils.media_manage import media_manager
-from fkstreaming.utils.streaming import transcode_manager
-from fkstreaming.utils.auth import token_required
+from fkstreaming.utils.media_manager import media_manager
+from fkstreaming.utils.video import transcode_manager
+from fkstreaming.utils.auth import Auth
 
 
 def isAuth(be): #TODO
@@ -13,33 +13,30 @@ def isAuth(be): #TODO
         raise AuthenticationError
 
 class videoDownload(Resource):
-    @token_required
-    def get(token, self, id):
-        isAuth(token)
+    @Auth.token_required
+    def get(self, id):
         current_app.logger.info(f'\n[+]Sending video {id}\n')
-        path = media_manager.get_video_path(id)
+        path = media_manager.fetch_video_path(id)
         if path:
             return send_from_directory(
                                 directory=path.parent,
                                 path=     path.name)
         else:
             raise MediaFileNotFound
-
+	
 class videoFolder(Resource):
-    @token_required
-    def get(token, self, folder_id):
-        isAuth(token)
-        folder = media_manager.get_folder(folder_id)
+    @Auth.token_required
+    def get(self, folder_id):
+        folder = media_manager.fetch_folder(folder_id)
         if folder:
             return jsonify(folder)
         else:
             raise MediaFileNotFound
 
 class videoThumb(Resource):
-    @token_required
-    def get(token, self, id):
-        isAuth(token)
-        info = media_manager.get_video_info(id)
+    @Auth.token_required
+    def get(self, id):
+        info = media_manager.fetch_video_info(id)
         if info:
             return send_from_directory(
                                 directory=media_manager.thumbnails_dir,
@@ -48,20 +45,18 @@ class videoThumb(Resource):
             raise MediaThumbnailNotFound
 
 class videoAll(Resource):
-    @token_required
-    def get(token, self):
-        isAuth(token)
-        videos = media_manager.get_all_videos()
+    @Auth.token_required
+    def get(self):
+        videos = media_manager.fetch_all_videos()
         if videos:
             return jsonify(videos)
         else:
             return MediaFileNotFound
 
 class videoInfo(Resource):
-    @token_required
-    def get(token, self, id):
-        isAuth(token)
-        info = media_manager.get_video_info(id)
+    @Auth.token_required
+    def get(self, id):
+        info = media_manager.fetch_video_info(id)
         if info:
             return jsonify(info)
         else:
@@ -80,9 +75,8 @@ class killAll(Resource):
 
 # sends hls stream segment
 class videoStreamSegment(Resource):
-    @token_required
-    def get(token, self, id, segment_name):
-        isAuth(token)
+    @Auth.token_required
+    def get(self, id, segment_name):
         path = transcode_manager.work_path
         if path:
             return send_from_directory(
@@ -94,12 +88,12 @@ class videoStreamSegment(Resource):
 
 # initialize hls encoding thread         
 class videoStream(Resource):
-    @token_required
-    def get(token, self, id):
-        isAuth(token)
-        path = media_manager.get_video_path(id)
-        manifiest = transcode_manager.new(path, token)
-        print("===>", token, " stream started")
+    @Auth.token_required
+    def get(self, id):
+        current_token = Auth.get_current_token()
+        path = media_manager.fetch_video_path(id)
+        manifiest = transcode_manager.new(path, current_token)
+        print("===>", current_token, " stream started")
         if path:
             return send_from_directory(
                                 directory=manifiest.parent,
@@ -110,11 +104,10 @@ class videoStream(Resource):
 
 # finish hls encoding thread
 class finishStream(Resource):
-    @token_required
-    def get(token, self):
-        isAuth(token)
-        print("tryyng finish ", token)
-        finish = transcode_manager.finish(token)
+    @Auth.token_required
+    def get(self):
+        current_token = Auth.get_current_token()
+        finish = transcode_manager.finish(current_token)
         print(transcode_manager.poll)
         if finish:
             return jsonify({"message":"success finish"})

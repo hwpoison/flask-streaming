@@ -3,30 +3,26 @@ from jinja2 import TemplateNotFound
 import time
 import random
 
-from fkstreaming.utils.media_manage import media_manager
-from fkstreaming.utils.auth import token_required
+from fkstreaming.utils.media_manager import media_manager
+from fkstreaming.utils.auth import Auth
 
 player = Blueprint('player', __name__,
                         template_folder='templates')
 
 @player.route('/play/<int:video_id>', methods=['GET'])
-@token_required
-def getPlayer(user, video_id):
-    if not user:
-        return redirect(url_for('home./'))
-    info = media_manager.get_video_info(video_id)
+@Auth.token_required
+def getPlayer(video_id):
+    info = media_manager.fetch_video_info(video_id)
     if info:
         return render_template('player/video_player.html', video_info=info)
     else:
         abort(404)
 
 @player.route('/play/<int:video_id>/stream', methods=['GET'])
-@token_required
-def getStream(user, video_id):
-    if not user:
-        return redirect(url_for('home./'))
-    info = media_manager.get_video_info(video_id)
-    info['stream_id'] = user
+@Auth.token_required
+def getStream(video_id):
+    info = media_manager.fetch_video_info(video_id)
+    info['stream_id'] = Auth.get_current_token()
     if info:
         return render_template('player/video_player_stream.html', video_info=info)
     else:
