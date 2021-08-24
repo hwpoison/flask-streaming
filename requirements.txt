@@ -3,3 +3,4 @@ flask
 flask_restful
 python-ffmpeg-video-streaming
 ffmpeg-python
+av

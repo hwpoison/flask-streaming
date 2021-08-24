@@ -40,12 +40,6 @@ class DirMediaManager(DirManager):
     def __init__(self, root_path=Path.cwd()):
         DirManager.__init__(self, root_path)
         self.config_file = 'dirs.ini'
-        self.thumbnails_dir = 'thumbnails/thumbs/'
-        self.support_extensions = {
-            'video':['.mp4', '.avi', '.flv', '.mkv'],
-            'music':['.mp3'],
-            'subtitle':['.str', '.vvt']
-        }
         self.folders = {}
         self.files = {}
 
@@ -64,7 +58,7 @@ class DirMediaManager(DirManager):
                 return type
         return False
 
-    def sample_list(self, to_sample : list, k=5) -> list:
+    def sample_list(self, to_sample : list, k=6) -> list:
         if (amount:=len(to_sample)) < k:
             k = amount
         sample = random.sample(to_sample, k)
@@ -83,8 +77,9 @@ class DirMediaManager(DirManager):
         # add dir to the index
         for idx, dir in enumerate(walk):
             # check if dir was modifiqued
-            if dir in self.folders:
-                if self.compare_mtime(dir.stat(), self.folders[dir]['st']):
+            check = self.find_folder_by_path(dir)
+            if check and check['id'] in self.folders:
+                if self.compare_mtime(dir.stat(), self.folders[check['id']]['st']):
                     continue 
 
             # get dir content
@@ -126,6 +121,12 @@ class DirMediaManager(DirManager):
                 return dir_path
         return None
     
+    def find_file_by_name(self, string : str):
+        """ returns firts coincidence """
+        for id, file in self.files.items():
+            if string.lower() in str(file['path'].name).lower():
+                yield id
+       
     def get_root_folders(self):
         """ fetch only root folders (from dirs.ini)"""
         for path, info in self.folders.items():
@@ -134,6 +135,14 @@ class DirMediaManager(DirManager):
 
 class FetchVideo(DirMediaManager):
     """ main class for fetch content form system directory """
+    def __init__(self):
+        DirMediaManager.__init__(self)
+        self.thumbnails_dir = 'thumbnails/'
+        self.support_extensions = {
+            'video':['.mp4', '.avi', '.flv', '.mkv'],
+            'music':[],
+            'subtitle':['.str', '.vvt']
+        }
     def fetch_video_path(self, video_id):
         if video:=self.find_file(video_id):
             return video['path']
@@ -157,12 +166,23 @@ class FetchVideo(DirMediaManager):
             return False
 
     def fetch_thumbnail(self, input_file : Path):
-        thumb_output = self.root_path.joinpath(self.thumbnails_dir)
+        output_dir = self.root_path.joinpath(self.thumbnails_dir)
         thumb = ffmpegUtils.generate_thumbail(
                                     input_file, 
-                                    thumb_output)
-        return thumb
+                                    output_dir.joinpath('thumbs/')
+                                    )
+        if not thumb:
+            return "generic_thumb.png"
+        return 'thumbs/'+thumb.name
 
+    def search_video_by_name(self, string : str):
+        results =  self.find_file_by_name(string)
+        all_coincidences = {}
+        for id in results:
+            all_coincidences[id] = self.fetch_video_info(id)
+        return all_coincidences 
+        
+        
     def fetch_video_info(self, video_id):
         if video:=self.find_file(video_id):
             file_path = video['path']
@@ -218,11 +238,8 @@ class FetchVideo(DirMediaManager):
         return folders
 
 if __name__ == '__main__':
-   a = FetchVideo()
-   a.root_path = Path("../")
-   a.update_index()
-   c = a.fetch_video_info(1)
-   print(c)
+   pass
+
 else:
     media_manager = FetchVideo()
     media_manager.root_path = media_manager.root_path.joinpath('fkstreaming')

@@ -2,7 +2,7 @@ from pathlib import Path
 import sys, datetime, random
 from threading import Thread
 
-import ffmpeg
+import av
 import ffmpeg_streaming
 from ffmpeg_streaming import Formats, Bitrate, Representation, Size
 
@@ -17,30 +17,24 @@ class ffmpegUtils:
     @staticmethod
     def generate_thumbail(input_file : Path, destine : Path):
         """ takes a video path and generate and save a thumbnail """ 
-        
-        thumbnail_name = f'{input_file.stem}_thumb.jpg'
-        thumb_full_path = destine.joinpath(thumbnail_name)
+        thumbnail_name = f'{input_file.stem.replace(".","_")}_thumb.jpg'
+        output_path = destine.joinpath(thumbnail_name)
         # first, check if thumbils actual exists
-        if Path(destine.joinpath(thumbnail_name)).exists():
-            return thumbnail_name
+        if output_path.exists():
+            return output_path
         # now generate video thumbail form random frame
+        print(f'[+]Generating thumbail for {input_file}')
         try:
-            probe = ffmpegUtils.probe(input_file)
-            print(probe)
-            duration = probe['format']['duration']
-            rtime = random.randint(0, int(float(duration))//2)
-            print(f'[+]Generating thumbail for {input_file}')
-            (
-                ffmpeg
-                .input(input_file, ss=rtime)
-                .filter('scale', 500, -1)
-                .output(str(thumb_full_path), vframes=1)
-                .overwrite_output()
-                .run()
-            )
-            return thumbnail_name#out_name
+            container = av.open(str(input_file))
+            container.seek(container.duration//4)
+            for frame in container.decode(video=0):
+                frame.to_image().save(output_path)
+                break
         except:
-            return 'generic_thumb.png'
+            #sprint("[x]Error")
+            return None
+            
+        return output_path
 
 class encodeThread(Thread):
     def __init__(self, file_path : Path, temp_dir : Path, name : str):
@@ -52,7 +46,7 @@ class encodeThread(Thread):
         self.print_monitor = False
         self.default_size = ['24p','144p', '360p']
         self.sizes = {
-                '24p':  Representation(Size(16, 24), Bitrate(25 * 1024, 9 * 1024)),
+                '24p':  Representation(Size(16, 24), Bitrate(25 * 1024, 9 * 1024)), # xD
                 '48p':  Representation(Size(32, 48), Bitrate(55 * 1024, 15 * 1024)),
                 '96p':  Representation(Size(64, 96), Bitrate(95 * 1024, 30 * 1024)),
                 '120p': Representation(Size(160, 120), Bitrate(40 * 1024, 30 * 1024)),
@@ -127,7 +121,11 @@ class ThreadManager():
         return False
 
 if __name__ == '__main__':
-    transcode_manager = ThreadManager()
+    #transcode_manager = ThreadManager()
+    inp = Path("C:\\Users\\Guille\\Desktop\\downloads\\Los Simpsons\\Temporada 13\\a.mp4")
+    n = ffmpegUtils.generate_thumbail(inp, Path("C:\\Users\Guille\\Desktop\\downloads\\Los Simpsons\\tes\\"))
+    print(n)
+    
 else:
     transcode_manager = ThreadManager()
     transcode_manager.work_path = Path.cwd().joinpath('fkstreaming/stream/buffer')

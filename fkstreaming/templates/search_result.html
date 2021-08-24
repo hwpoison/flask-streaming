@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+{% block title %} justPlay! - Resultados de la busqueda {% endblock %}
+{% block content %}
+<h2 class="font-light pl-4 pt-5 break-words"> Resultados de la busqueda ({{ result|length }} coincidencias.) </h2>
+<div id="search-content">
+	<div class="flex flex-wrap -mx-2 overflow-hidden sm:-mx-1 p-3 content-center">
+		{% for search_id, search in result.items() %}
+		<div class="my-2 px-2 w-full overflow-clip overflow-hidden sm:my-1 sm:px-1 md:w-1/4 lg:w-1/4 xl:w-1/5">
+			<a href="/play/{{ search['id'] }}">
+				<div class="absolute md:w-1/4 lg:w-1/4 xl:w-1/5">
+					<div class="self-center">
+						<span class="text-white text-xl md:text-base font-bold" style="text-shadow:-1px 1px 0 #000">{{ search['title'] }}</span>
+					</div>
+				</div>
+				<img class="" src="/api/v1/videos/{{ search['id'] }}/thumb">
+			</a>
+	    </div>
+	  {% endfor %}
+	</div>
+</div>
+<hr>
+{% endblock %}
+

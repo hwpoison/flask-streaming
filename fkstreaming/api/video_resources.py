@@ -2,15 +2,11 @@ from flask import jsonify, request, send_from_directory, current_app, abort
 from flask_restful import Resource
 import os 
 
-from fkstreaming.api.errors import MediaFileNotFound, MediaThumbnailNotFound, InternalServerError, AuthenticationError
+from fkstreaming.api.errors import MediaFileNotFound, MediaThumbnailNotFound, \
+InternalServerError, AuthenticationError, SearchLengthError
 from fkstreaming.utils.media_manager import media_manager
 from fkstreaming.utils.video import transcode_manager
 from fkstreaming.utils.auth import Auth
-
-
-def isAuth(be): #TODO
-    if not be:
-        raise AuthenticationError
 
 class videoDownload(Resource):
     @Auth.token_required
@@ -52,7 +48,15 @@ class videoAll(Resource):
             return jsonify(videos)
         else:
             return MediaFileNotFound
-
+           
+class videoSearch(Resource):
+    def get(self, string):
+        if len(string) < 3:
+            raise SearchLengthError
+        result = media_manager.search_video_by_name(string)
+        
+        return result
+        
 class videoInfo(Resource):
     @Auth.token_required
     def get(self, id):

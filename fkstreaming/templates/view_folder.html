@@ -1,51 +1,49 @@
 {% extends "index.html" %}
 {% block title %} justPlay! - {{ folder['name'] }} {% endblock %}
 {% block content %}
-<p style="color:gray;font-family: arial; font-size: 20px;padding-left: 20px;margin-top: 20px"> {{ folder['name'] }} </p>
-<div class="row row-cols-1 row-cols-md-4 g-4">
+<a href="/{{ folder_id }}"><h2 class="font-light pl-4 pt-5 break-words"> 📁 {{ folder['name'] }} </h2></a>
+<div id="folder-content">
+	<div class="flex flex-wrap -mx-2 overflow-hidden sm:-mx-1 p-3 content-center">
 		{% for file in folder['files'] %}
-	    <div class="col">
-	     	<div class="card">
-			  <img src="/api/v1/videos/{{ file['id'] }}/thumb" width="50" class="card-img-top rounded-top" alt="...">
-			  <div class="card-body">
-			    <h5 class="card-title">{{ file['title'] }}</h5>
-			    <p class="card-text"></p>
-			    <a href="/play/{{ file['id'] }}" class="btn btn-primary">Mirar Ahora</a>
-			  </div>
-			</div>
-	  	</div>
-	  	{% endfor %}
+		<div class="my-2 px-2 w-full overflow-clip overflow-hidden sm:my-1 sm:px-1 md:w-1/4 lg:w-1/4 xl:w-1/5">
+			<a href="/play/{{ file['id'] }}">
+				<div class="absolute md:w-1/4 lg:w-1/4 xl:w-1/5">
+					<div class="self-center">
+						<span class="text-white text-xl md:text-base font-bold" style="text-shadow:-1px 1px 0 #000">{{ file['title'] }}</span>
+					</div>
+				</div>
+				<img class="" src="/api/v1/videos/{{ file['id'] }}/thumb">
+			</a>
+	    </div>
+	  {% endfor %}
+	</div>
 </div>
-
-{% for folder_id, content in folder['subdirs'].items() %}
 <hr>
-<p style="color:gray;font-family: arial; font-size: 20px;padding-left: 20px;margin-top: 20px"> {{ content['name'] }} </p>
-<div class="row row-cols-1 row-cols-md-4 g-4">
-				{% for file in content['file_samples'] %}
-			    <div class="col">
-			     	<div class="card">
-					  <img src="/api/v1/videos/{{ file['id'] }}/thumb" width="50" class="card-img-top rounded-top" alt="...">
-					  <div class="card-body">
-					    <h5 class="card-title">{{ file['title'] }}</h5>
-					    <p class="card-text"></p>
-					    <a href="/play/{{ file['id'] }}" class="btn btn-primary">Mirar Ahora</a>
-					  </div>
+{% for folder_id, content in folder['subdirs'].items() %}
+<a href="/{{ folder_id }}"><h2 class="font-light pl-4 pt-5 break-words"> 📁 {{ content['name'] }} </h2></a>
+<div>
+<div id="folder-content" class="">
+	<div class="flex flex-wrap -mx-2 overflow-hidden sm:-mx-1 p-3 content-center">
+	{% for file in content['file_samples'] %}
+	<div class="my-2 px-2 w-full overflow-clip overflow-hidden sm:my-1 sm:px-1 md:w-1/4 lg:w-1/4 xl:w-1/5">
+		<a href="/play/{{ file['id'] }}"><div class="">
+				<div class="absolute">
+					<div class="self-center">
+						<span class="text-white text-xl md:text-base font-bold" style="text-shadow:-1px 1px 0 #000">{{ file['title'] }}</span>
 					</div>
-			  	</div>
-			  	{% endfor %}
-			  	<div>
-			  		<center>
-			  		<div class="col">
-			     	<div class="card" >
-					  <div class="card-body">
-					    <h5 class="card-title"></h5>
-					    <p class="card-text"></p>
-					    <a href="/{{ folder_id }}" class="btn btn-primary">Ver más de esto... </a>
-					  </div>
-					</div>
-			  	</div>
-			  </center>
-			  	</div>
+				</div>
+				<img class="" src="/api/v1/videos/{{ file['id'] }}/thumb">
+		</div></a>
+	</div>
+	{% endfor %}
+		<div class="my-2 px-2 w-full overflow-hidden sm:my-1 sm:px-1 md:w-1/4 lg:w-1/4 xl:w-1/5">
+		  <div class="hidden md:block md:mt-14"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+		  <path d="M22 12l-20 12 5-12-5-12z"/></svg>.</div>
+		  <div class="md:hidden bg-purple-600 hover:bg-purple-700 transition duration-500 p-4 text-center text-white rounded-xl"><a href="/{{ folder_id }}">Ver más de esto</a></div>
 		</div>
-		{% endfor %}
+	</div>
+</div>
+</div>
+{% endfor %}
 {% endblock %}
+

@@ -13,6 +13,9 @@ class InternalServerError(HTTPException):
 class AuthenticationError(HTTPException):
     pass
 
+class SearchLengthError(HTTPException):
+    pass
+
 errors = {
     'MediaFileNotFound': {
         'message': "Media not found!",
@@ -28,6 +31,10 @@ errors = {
     },
     'AuthenticationError': {
         'message': 'Authentication Token require!',
+        'status': 403
+    },
+    'SearchLengthError': {
+        'message': 'Search string input too short!',
         'status': 403
     }
 }

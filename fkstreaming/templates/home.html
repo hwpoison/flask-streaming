@@ -1,58 +1,30 @@
 {% extends "index.html" %}
 {% block title %}justPlay!{% endblock %}
 {% block content %}
-<!-- folders loop -->
 {% for folder_id, folder in folders.items() %}
-<p style="color:gray;font-family: arial; font-size: 20px;padding-left: 20px;margin-top: 20px"> {{ folder['name'] }} </p>
-<div class="row row-cols-1 row-cols-md-4 g-4">
-		<!-- files loop -->
-		{% for video_file in folder['file_samples'] %}
-	    <div class="col">
-	     	<div class="card animated">
-			  <img id="video-card-image" src="/api/v1/videos/{{ video_file['id'] }}/thumb" width="50" class="card-img-top rounded-top " alt="{{ video_file['title'] }}">
-			  <div id="video-card" class="card-body">
-			    <h5 class="card-title">{{ video_file['title'] }}</h5>
-			    <p class="card-text"></p>
-			    <a href="/play/{{ video_file['id'] }}" class="stretched-link"></a>
-			  </div>
-			</div>
-	  	</div>
-	  	{% endfor %}
-	  	<div>
-	  		<center>
-	  		<div class="col">
-	     	<div class="card" >
-			  <div class="card-body">
-			    <h5 class="card-title"></h5>
-			    <p class="card-text"></p>
-			    <a href="/{{ folder_id }}" class="btn btn-primary">Ver más de {{ folder['name'][:30] }} </a>
-			  </div>
-			</div>
-	  	</div>
-	  </center>
-	  	</div>
+<a href="/{{ folder_id }}"><h2 class="font-light pl-4 pt-5 break-words"> 📁 {{ folder['name'] }}</h2></a>
+<div id="folder-content">
+	 <div class="flex flex-wrap -mx-2 overflow-hidden sm:-mx-1 p-3 content-center">
+	 {% for video_file in folder['file_samples'] %}
+	 <div class="my-2 px-2 w-full overflow-clip overflow-hidden sm:my-1 sm:px-1 md:w-1/4 lg:w-1/4 xl:w-1/5">
+		<a href="/play/{{ video_file['id'] }}">
+				<div class="absolute md:w-1/4 lg:w-1/4 xl:w-1/5">
+					<div class="self-center">
+						<span class="text-white text-xl md:text-base font-bold" style="text-shadow:-1px 1px 0 #000">{{ video_file['title'] }}</span>
+					</div>
+				</div>
+				<img class="w-full" src="/api/v1/videos/{{ video_file['id'] }}/thumb">
+		</a>
+	  </div>
+	  {% endfor %}
+	  <div class="my-2 px-2 w-full overflow-hidden sm:my-1 sm:px-1 md:w-1/4 lg:w-1/4 xl:w-1/5">
+		<div class="hidden md:block md:mt-14"><a href="/{{ folder_id }}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path d="M22 12l-20 12 5-12-5-12z"/></svg></a></div>
+		<div class="md:hidden bg-purple-600 hover:bg-purple-700 transition duration-500 p-4 text-center text-white rounded-xl"><a href="/{{ folder_id }}">Ver más de esto</a></div>
+	 </div>
+	</div>
 </div>
 {% endfor %}
-<script>
-/*  dynamic import to avoid jquery ajax function xD
-async function loadVideo(){
-	const player_body = await fetch('/play/2');
-	const body = await player_body.text();
-	const content = document.getElementById('content')
-	var parser = new DOMParser()
-	var response = parser.parseFromString(body, "text/html")
-	Array.from(response.getElementsByTagName('script')).forEach(element=>{
-			setTimeout(()=>{
-				if(element.src !== ''){
-					var script = document.createElement("script")
-					script.src = element.src;
-					script.type = "text/javascript"
-					document.head.appendChild(script)
-				}else{
-					eval(element.text)
-				}}, 2000)
-	})
-	content.innerHTML = body;
-} */
-</script>
 {% endblock %}
+
+
+

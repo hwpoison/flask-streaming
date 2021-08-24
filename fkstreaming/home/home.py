@@ -8,6 +8,13 @@ from fkstreaming.utils.media_manager import media_manager
 home = Blueprint('home', __name__,
                         template_folder='templates')
 
+@home.route('/search', methods=['POST'])
+def search():
+    if request.method == 'POST':
+        query = request.form.get('search_query')
+        result = media_manager.search_video_by_name(query)
+        return render_template('search_result.html', result=result)
+    abort(404)
 @home.route('/', methods=['GET'], endpoint="/")
 def home_page():
     root_folders = media_manager.fetch_main_preview()
