@@ -1,5 +1,6 @@
 webvtt-py
 flask
+flask_cors
 flask_restful
 python-ffmpeg-video-streaming
 ffmpeg-python
