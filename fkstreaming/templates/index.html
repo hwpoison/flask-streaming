@@ -1,70 +1,127 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#5B2C6F">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title> {% block title %}{% endblock %} </title>
-			{% block styles %}{% endblock %}
-	<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-	<link href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" rel="stylesheet">
+	{% block styles %}{% endblock %}
+	<!-- <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet"> -->
+	<link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" />
 </head>
-<nav class="w-full">
-<header id="header" class="bg-purple-900 grid grid-cols-3 gap-4 justify-items-center cursor-default z-40 rounded-b-sm">
-	<!-- Menu button -->
-	<div class="p-3 fill-current text-white mt-1 justify-self-start "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 22h-4v-4h4v4zm0-12h-4v4h4v-4zm0-8h-4v4h4v-4zm3 0v4h17v-4h-17zm0 12h17v-4h-17v4zm0 8h17v-4h-17v4z"/></svg></div>
-	<!-- Header text -->
-	<h1 class="font font-thin  text-white bold text-center text-3xl"><a href="/">justPlay!</a></h1>
-	<!-- Search Bar and Button -->
-	<div id="search-magnify" class="p-3 mt-1 fill-current text-white justify-self-end md:hidden"><svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="25.00px" height="25.00px" viewBox="0 0 612.08 612.08" style="enable-background:new 0 0 612.08 612.08;"
-	 xml:space="preserve">
-	<path d="M237.927,0C106.555,0,0.035,106.52,0.035,237.893c0,131.373,106.52,237.893,237.893,237.893
-		c50.518,0,97.368-15.757,135.879-42.597l0.028-0.028l176.432,176.433c3.274,3.274,8.48,3.358,11.839,0l47.551-47.551
-		c3.274-3.274,3.106-8.703-0.028-11.838L433.223,373.8c26.84-38.539,42.597-85.39,42.597-135.907C475.82,106.52,369.3,0,237.927,0z
-		 M237.927,419.811c-100.475,0-181.918-81.443-181.918-181.918S137.453,55.975,237.927,55.975s181.918,81.443,181.918,181.918
-		S338.402,419.811,237.927,419.811z"/></svg></div>
-    <form class="self-center " action="/search" method="POST">
-		<input id="search-bar" name="search_query" class="hidden md:block w-full mr-4 rounded-br-lg appareance-none border border-transparent placeholder-gray-400 py-2 px-2 md:text-base focus:outline-none focus:border-transparent focus:ring-2 focus:ring-purple-600" placeholder="Buscar..." type="text"/>
-		<input type="button" name="go" class="hidden" value="Submit" />
-	</form>	 
-</header>
+<nav>
+	<header id="header">
+		<!-- Header text -->
+		<h1 id="header-text"><a href="/">justPlay!</a></h1>
+		<form id="search-box" action="/search" method="POST">
+			<input name="search_query"
+				class="hidden md:block w-full mr-4 rounded-br-lg appareance-none border border-transparent placeholder-gray-400 py-2 px-2 md:text-base focus:outline-none focus:border-transparent focus:ring-2 focus:ring-purple-600"
+				placeholder="Buscar..." type="text" />
+			<button style="all:unset;padding-left:10px">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24">
+					<path
+						d="M23.822 20.88l-6.353-6.354c.93-1.465 1.467-3.2 1.467-5.059.001-5.219-4.247-9.467-9.468-9.467s-9.468 4.248-9.468 9.468c0 5.221 4.247 9.469 9.468 9.469 1.768 0 3.421-.487 4.839-1.333l6.396 6.396 3.119-3.12zm-20.294-11.412c0-3.273 2.665-5.938 5.939-5.938 3.275 0 5.94 2.664 5.94 5.938 0 3.275-2.665 5.939-5.94 5.939-3.274 0-5.939-2.664-5.939-5.939z" />
+				</svg>
+			</button>
+		</form>
+	</header>
 </nav>
+
 <body>
-	<main class="mb-10">
-		<div id="content" class="cursor-default">
+	<main>
+		<div id="content">
 			{% block content %}{% endblock %}
 		</div>
 	</main>
-<footer id="footer" class="bg-purple-900 text-white text-center border-collapse cursor-default">
-	<p>created by hwpoison</p>
-</footer>	
+	<footer>
+		<p>Created by hwpoison</p>
+	</footer>
 </body>
+
 </html>
 <style>
-.footer {
-	clip-path: polygon(50% 33%, 100% 0, 100% 99%, 0 100%, 0 0);
-	position: fixed;
-	padding: 10px 10px 0px 10px;
-	bottom: 0;
-	width: 100%;
-	/* Height of the footer*/ 
-	height: 40px;
-}
+	html,
+	body,
+	div,
+	h1,
+	h2,
+	h3,
+	h4 {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		outline: 0;
+		font-size: 100%;
+		vertical-align: baseline;
+		background: transparent;
+	}
+
+	body {
+		font-family: 'Roboto', sans-serif;
+		background: rgb(47, 45, 45);
+		background: linear-gradient(90deg, rgba(47, 45, 45, 1) 0%, rgba(36, 36, 36, 1) 14%, rgba(36, 34, 34, 1) 17%, rgba(13, 11, 11, 1) 70%, rgba(13, 11, 11, 1) 97%);
+		color: white;
+		/* all text white */
+	}
+
+	#header {
+		display: flex;
+		flex-wrap: wrap;
+
+		justify-content: space-between;
+		padding: 10px;
+		background-color: black;
+		cursor: default;
+		z-index: 40;
+		border-radius: 0 0.0 0.3rem 0.3rem;
+	}
+
+	#header-text {
+		text-decoration: none;
+		grid-area: header;
+		font-size: 2.5rem;
+	}
+
+	#header-text a {
+		font-family: bebas;
+		color: red;
+		text-decoration: none;
+	}
+
+	#search-box {
+		height: 40px;
+		display: flex;
+		border: none;
+		padding: 0.4rem;
+		cursor: pointer;
+	}
+
+	#search-box input[type=text] {
+		padding: 5px;
+	}
+
+	footer {
+		position: fixed;
+		text-align: center;
+		background-color: black;
+		color: white;
+		bottom: 0;
+		height:40px;
+		width: 100%;
+	}
 </style>
 <script>
-const glass = document.querySelector("#search-magnify")
-const bar = document.querySelector("#search-bar")
-glass.addEventListener("click", ()=>{
-	if(bar.classList.contains('hidden')){
-		bar.classList.remove('hidden')
-		glass.classList.add('hidden')
-	}else{
-		bar.classList.add('hidden')
-		glass.classList.remove('hidden')
-	}
-})
+	const glass = document.querySelector("#search-magnify")
+	const bar = document.querySelector("#search-bar")
+	glass.addEventListener("click", () => {
+		if (bar.classList.contains('hidden')) {
+			bar.classList.remove('hidden')
+			glass.classList.add('hidden')
+		} else {
+			bar.classList.add('hidden')
+			glass.classList.remove('hidden')
+		}
+	})
 </script>
-
-

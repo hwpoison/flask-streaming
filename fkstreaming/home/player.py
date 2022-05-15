@@ -15,8 +15,7 @@ def getPlayer(video_id):
     info = media_manager.fetch_video_info(video_id)
     if info:
         return render_template('player/video_player.html', video_info=info)
-    else:
-        abort(404)
+    abort(404)
 
 @player.route('/play/<int:video_id>/stream', methods=['GET'])
 @Auth.token_required
@@ -25,5 +24,4 @@ def getStream(video_id):
     info['stream_id'] = Auth.get_current_token()
     if info:
         return render_template('player/video_player_stream.html', video_info=info)
-    else:
-        abort(404)
+    abort(404)

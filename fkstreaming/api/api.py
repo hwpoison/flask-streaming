@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 
 from .errors import errors
 from .video_resources import videoInfo, videoAll, videoDownload, \
-videoThumb, videoFolder, killAll, videoStream, videoStreamSegment, finishStream, videoSearch
+videoThumb, videoFolder, killAll, videoStream, videoStreamSegment, finishStream, videoSearch,videoSubtitles
 
 content_v1 = Blueprint('content_v1', __name__)
 
@@ -15,6 +15,7 @@ api.add_resource(videoThumb,            '/videos/<int:id>/thumb')       # fetch 
 api.add_resource(videoDownload,         '/videos/<int:id>/download')    # fetch video file
 api.add_resource(videoFolder,           '/videos/folders/<int:folder_id>') # get video folder 
 api.add_resource(videoSearch,           '/videos/find/<string>')   #search video
+api.add_resource(videoSubtitles,        '/videos/<int:id>/subtitle')   #search video
 # stream endpoints
 api.add_resource(videoStream,           '/videos/<int:id>/stream/start') # init stream/ get manifiest
 api.add_resource(videoStreamSegment,    '/videos/<int:id>/stream/<segment_name>') # getsgment

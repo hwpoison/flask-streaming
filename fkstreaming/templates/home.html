@@ -1,29 +1,10 @@
+<!-- home view  -->
 {% extends "index.html" %}
-{% block title %}justPlay!{% endblock %}
+{% block title %} justPlay! {% endblock %}
 {% block content %}
-{% for folder_id, folder in folders.items() %}
-<a href="/{{ folder_id }}"><h2 class="font-light pl-4 pt-5 break-words"> 📁 {{ folder['name'] }}</h2></a>
-<div id="folder-content">
-	 <div class="flex flex-wrap -mx-2 overflow-hidden sm:-mx-1 p-3 content-center">
-	 {% for video_file in folder['file_samples'] %}
-	 <div class="my-2 px-2 w-full overflow-clip overflow-hidden sm:my-1 sm:px-1 md:w-1/4 lg:w-1/4 xl:w-1/5">
-		<a href="/play/{{ video_file['id'] }}">
-				<div class="absolute md:w-1/4 lg:w-1/4 xl:w-1/5">
-					<div class="self-center">
-						<span class="text-white text-xl md:text-base font-bold" style="text-shadow:-1px 1px 0 #000">{{ video_file['title'] }}</span>
-					</div>
-				</div>
-				<img class="w-full" src="/api/v1/videos/{{ video_file['id'] }}/thumb">
-		</a>
-	  </div>
-	  {% endfor %}
-	  <div class="my-2 px-2 w-full overflow-hidden sm:my-1 sm:px-1 md:w-1/4 lg:w-1/4 xl:w-1/5">
-		<div class="hidden md:block md:mt-14"><a href="/{{ folder_id }}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path d="M22 12l-20 12 5-12-5-12z"/></svg></a></div>
-		<div class="md:hidden bg-purple-600 hover:bg-purple-700 transition duration-500 p-4 text-center text-white rounded-xl"><a href="/{{ folder_id }}">Ver más de esto</a></div>
-	 </div>
-	</div>
-</div>
-{% endfor %}
+	{% with collection=collection %}
+		{% include 'dir.html' %}
+	{% endwith %}
 {% endblock %}
 
 

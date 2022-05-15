@@ -1,5 +1,8 @@
 {% extends "index.html" %}
 {% block title %}403+1!{% endblock %}
 {% block content %}
-No encontrado!
+<center>
+    <spans> Oops! Not found! </span><br>
+    <img style="width:50%" src="{{url_for('static', filename='images/404.jpg')}}" />
+</center>
 {% endblock %}
