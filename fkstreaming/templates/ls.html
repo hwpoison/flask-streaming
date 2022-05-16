@@ -1,6 +1,6 @@
 <!-- list files from a folder -->
-<h2 class="folder-title"> 📁<a>{{ folder['name'] }} </a></h2>
-<div class="folder-view">
+<h2 class="folder-title"> {% include  'folder_icon.html'  %} <a>{{ folder['name'] }} </a></h2>
+<div class="folder-view pure-grid">
 	{% for file in folder['files'] %}
         {% with file=file %}
             {% include 'file_card.html' %}

@@ -97,8 +97,6 @@ class killAll(Resource):
         transcode_manager.kill_all()
 
 # sends hls stream segment
-
-
 class videoStreamSegment(Resource):
     @Auth.token_required
     def get(self, id, segment_name):
@@ -112,8 +110,6 @@ class videoStreamSegment(Resource):
             raise MediaFileNotFound
 
 # initialize hls encoding thread
-
-
 class videoStream(Resource):
     @Auth.token_required
     def get(self, id):
@@ -130,8 +126,6 @@ class videoStream(Resource):
             raise MediaFileNotFound
 
 # finish hls encoding thread
-
-
 class finishStream(Resource):
     @Auth.token_required
     def get(self):

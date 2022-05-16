@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,23 +8,16 @@
 	<title> {% block title %}{% endblock %} </title>
 	{% block styles %}{% endblock %}
 	<!-- <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet"> -->
+	<link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.svg') }}">
 	<link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" />
+	<!-- Pure JS Grid for old browsers that not support css grid -->
+	<script src={{ url_for('static', filename='js/purejsgrid.js' ) }}></script>
 </head>
 <nav>
 	<header id="header">
 		<!-- Header text -->
 		<h1 id="header-text"><a href="/">justPlay!</a></h1>
-		<form id="search-box" action="/search" method="POST">
-			<input name="search_query"
-				class="hidden md:block w-full mr-4 rounded-br-lg appareance-none border border-transparent placeholder-gray-400 py-2 px-2 md:text-base focus:outline-none focus:border-transparent focus:ring-2 focus:ring-purple-600"
-				placeholder="Buscar..." type="text" />
-			<button style="all:unset;padding-left:10px">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24">
-					<path
-						d="M23.822 20.88l-6.353-6.354c.93-1.465 1.467-3.2 1.467-5.059.001-5.219-4.247-9.467-9.468-9.467s-9.468 4.248-9.468 9.468c0 5.221 4.247 9.469 9.468 9.469 1.768 0 3.421-.487 4.839-1.333l6.396 6.396 3.119-3.12zm-20.294-11.412c0-3.273 2.665-5.938 5.939-5.938 3.275 0 5.94 2.664 5.94 5.938 0 3.275-2.665 5.939-5.94 5.939-3.274 0-5.939-2.664-5.939-5.939z" />
-				</svg>
-			</button>
-		</form>
+		{% include 'search_bar.html' %}
 	</header>
 </nav>
 
@@ -42,31 +34,10 @@
 
 </html>
 <style>
-	html,
-	body,
-	div,
-	h1,
-	h2,
-	h3,
-	h4 {
-		margin: 0;
-		padding: 0;
-		border: 0;
-		outline: 0;
-		font-size: 100%;
-		vertical-align: baseline;
-		background: transparent;
-	}
-
-	body {
-		font-family: 'Roboto', sans-serif;
-		background: rgb(47, 45, 45);
-		background: linear-gradient(90deg, rgba(47, 45, 45, 1) 0%, rgba(36, 36, 36, 1) 14%, rgba(36, 34, 34, 1) 17%, rgba(13, 11, 11, 1) 70%, rgba(13, 11, 11, 1) 97%);
-		color: white;
-		/* all text white */
-	}
-
 	#header {
+		position: fixed;
+		top: 0;
+		width: 100%;
 		display: flex;
 		flex-wrap: wrap;
 
@@ -90,27 +61,20 @@
 		text-decoration: none;
 	}
 
-	#search-box {
-		height: 40px;
-		display: flex;
-		border: none;
-		padding: 0.4rem;
-		cursor: pointer;
-	}
-
-	#search-box input[type=text] {
-		padding: 5px;
+	#content {
+		margin-top: 60px;
+		padding: 20px;
 	}
 
 	footer {
-		position: fixed;
 		text-align: center;
 		background-color: black;
 		color: white;
 		bottom: 0;
-		height:40px;
+		height: 50px;
 		width: 100%;
 	}
+
 </style>
 <script>
 	const glass = document.querySelector("#search-magnify")

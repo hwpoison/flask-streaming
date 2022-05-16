@@ -7,7 +7,7 @@
 <div id="video_container">
 	<h2 id="video-player-title"> {{ video_info['title'] }}</h2>
 	<center>
-		<video id="video_player" poster="">
+		<video id="video_player" poster="/api/v1/videos/{{ video_info['id'] }}/thumb" controls>
 			<track kind="captions" label="Spanish" srclang="es" src="/api/v1/videos/{{ video_info['id'] }}/subtitle">
 		</video>
 		<script src="https://cdn.jsdelivr.net/gh/BMSVieira/moovie.js@latest/js/moovie.min.js"></script>

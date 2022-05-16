@@ -1,14 +1,45 @@
 <!-- List all folder files and a preview of subdirs too -->
 {% for item_id, item in collection.items() %}
-<h2 class="folder-title"><a href="/folder/{{ item_id }}"> 📁 {{ item['name'] }} </a></h2>
-<div class="folder-view">
+<h2 class="folder-title"><a href="/folder/{{ item_id }}"> {% include 'folder_icon.html' %} {{ item['name'] }} </a></h2>
+<div class="folder-view pure-grid">
     {% for file in item['file_samples'] %}
         {% with file=file %}
             {% include 'file_card.html' %}
         {% endwith %}
     {% endfor %}
-    <div id="view-more">
-        <a href="/folder/{{ item_id }}"><button ><svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24" viewBox="0 0 24 24"><path d="M7.33 24l-2.83-2.829 9.339-9.175-9.339-9.167 2.83-2.829 12.17 11.996z"/></svg></button></a>
+    <div id="view-more-button" class="col-sm-1" style="background: none;">
+        <a href="/folder/{{ item_id }}">
+            <button>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24"
+                    height="24" viewBox="0 0 24 24">
+                    <path d="M7.33 24l-2.83-2.829 9.339-9.175-9.339-9.167 2.83-2.829 12.17 11.996z" />
+                </svg>
+            </button>
+        </a>
     </div>
 </div>
+<style>
+    #view-more-button {
+        align-self: center;
+        justify-self: center;
+        margin-top: 70px;
+    }
+
+    #view-more-button button {
+        transition: 0.5s;
+        text-decoration: none;
+        color: white;
+        background-color: rgb(13, 13, 14);
+        width: 90px;
+        border-radius: 13px;
+        height: 120px;
+        border: none;
+    }
+
+    #view-more-button button:hover {
+        transition: 1s;
+        background-color: rgb(24, 24, 31);
+        transform: translateX(10px);
+    }
+</style>
 {% endfor %}

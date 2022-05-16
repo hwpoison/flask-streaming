@@ -9,13 +9,7 @@ from ffmpeg_streaming import Formats, Bitrate, Representation, Size
 
 
 class ffmpegUtils:
-    @staticmethod
-    def probe(input_file: Path):
-        try:
-            return ffmpeg.probe(input_file)
-        except:
-            print(f"[+] Error to get probe from { input_file }")
-
+    
     @staticmethod
     def generate_thumbail(input_file: Path, destine: Path):
         """ takes a video path and generate and save a thumbnail """

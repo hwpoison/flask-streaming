@@ -4,7 +4,7 @@
 <br>
 <h2> Search results: {{ result|length }} coincidences. </h2>
 <div id="search-content">
-	<div class="folder-view">
+	<div class="folder-view pure-grid">
 		{% for file_id, file in result.items() %}
         	{% with file=file %}
            		{% include 'file_card.html' %}
