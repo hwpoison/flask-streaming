@@ -1,49 +1,56 @@
 {% extends "index.html" %}
-{% block title %}{{ video_info['title'] }}{% endblock %}
+{% block title %}{{ media_info['title'] }}{% endblock %}
 {% block styles %}
 {% endblock %}
 {% block content %}
 <div id="video_container">
-   <h2 id="video-player-title"> {{ video_info['title'] }}</h2>
+   <h2 id="video-player-title"> {{ media_info['title'] }}</h2>
    <center>
       <!-- Unsupported video format -->
-      {% if video_info['format'] in ['.avi']%}
-      Sorry, but this format is not supported :(
-      Please, try with <a href="/play/{{ video_info['id'] }}/stream"> stream or Download the video. </a> option. 
+      {% if media_info['mime'] == 'video/avi' %}
+      ||Sorry, but this format is not supported :(
+      ||Please, try with <a href="/play/{{ media_info['id'] }}/stream"> stream or Download the video. </a> option. 
       
-      <!-- Load FLV Player -->
-      {% elif video_info['format'] in [".flv"] %}
+      {% elif media_info['type'] == 'music' %}
+      <div style="display:flex;justify-content: center">
+        <img id="cover-music" src="/api/v1/videos/{{ media_info['id'] }}/thumb"><br>
+        <audio src="/api/v1/videos/{{ media_info['id'] }}/download" style="padding-top:250px;width:100%;margin:0;bottom:50%" autoplay controls></audio>
+      </div>
+        <!-- Load FLV Player -->
+      {% elif media_info['mime'] == 'video/flv' %}
       <script src={{ url_for('static', filename='js/players/flv.js' ) }}></script>
-         <video id="video_player" controls>
-            <track kind="captions" label="Spanish" srclang="es" src="/api/v1/videos/{{ video_info['id'] }}/subtitle">
+         <video id="video_player" controls preload>
+            <track kind="subtitles" label="Spanish" srclang="es" src="/api/v1/videos/{{ media_info['id'] }}/subtitle">
          </video>
 
       <!-- Load Normal Player -->
       {% else %}
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/BMSVieira/moovie.js@latest/css/moovie.min.css">
-      <video id="video_player" poster="/api/v1/videos/{{ video_info['id'] }}/thumb" controls>
-         <source src="/api/v1/videos/{{ video_info['id'] }}/download" type="video/mp4">
-         <track kind="captions" label="Spanish" srclang="es" src="/api/v1/videos/{{ video_info['id'] }}/subtitle">
+      <video id="video_player" poster="/api/v1/videos/{{ media_info['id'] }}/thumb" controls preload>
+         <source src="/api/v1/videos/{{ media_info['id'] }}/download" type="{{ media_info['mime'] }}">
+         <track kind="captions" label="Spanish" srclang="es" src="/api/v1/videos/{{ media_info['id'] }}/subtitle">
       </video>
       <script src="https://cdn.jsdelivr.net/gh/BMSVieira/moovie.js@latest/js/moovie.min.js"></script>
       {% endif %}
 
       <!-- Aditional options -->
-      <br>
-      Play with 
-      <a href="/api/v1/videos/{{ video_info['id'] }}/download"> External Player </a>
-      <span> or </span>
-      <a href="/play/{{ video_info['id'] }}/stream"> Stream </a>
+      <div style="font-weight: bold">
+         <br>
+         Play with 
+         <a href="/api/v1/videos/{{ media_info['id'] }}/download"> External Player </a>
+         <span> or </span>
+         <a href="/play/{{ media_info['id'] }}/stream"> Stream </a>
+      </div>
    </center>
 </div>
 <script> 
    // Load FLV Player
-   {% if video_info['format'] in [".flv"] %}
+   {% if media_info['format'] in [".flv"] %}
    if (flvjs.isSupported()) {
       var videoElement = document.getElementById('video_player');
       var flvPlayer = flvjs.createPlayer({
          type: 'flv',
-         url: '/api/v1/videos/{{ video_info['id'] }}/download'
+         url: '/api/v1/videos/{{ media_info['id'] }}/download'
            });
       flvPlayer.attachMediaElement(videoElement);
       flvPlayer.load();
@@ -83,5 +90,12 @@
       });
    });
    {% endif %}
+    // Automatic reproduction for audio files.
+    var video = document.getElementsByTagName('audio')[0];
+    video.onended = function(e) {
+      setTimeout(function() {
+         window.location.href = "/play/{{ media_info['id'] + 1 }}";
+      }, 100000);
+    };
 </script>
 {% endblock %}

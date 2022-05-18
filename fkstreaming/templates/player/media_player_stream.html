@@ -1,19 +1,19 @@
 {% extends "index.html" %}
-{% block title %}{{ video_info['title'] }}{% endblock %}
+{% block title %}{{ media_info['title'] }}{% endblock %}
 {% block styles %}
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/BMSVieira/moovie.js@latest/css/moovie.min.css">
 <div id="video_container">
-	<h2 id="video-player-title"> {{ video_info['title'] }}</h2>
+	<h2 id="video-player-title"> {{ media_info['title'] }}</h2>
 	<center>
-		<video id="video_player" poster="/api/v1/videos/{{ video_info['id'] }}/thumb" controls>
-			<track kind="captions" label="Spanish" srclang="es" src="/api/v1/videos/{{ video_info['id'] }}/subtitle">
+		<video id="video_player" poster="/api/v1/videos/{{ media_info['id'] }}/thumb" controls>
+			<track kind="captions" label="Spanish" srclang="es" src="/api/v1/videos/{{ media_info['id'] }}/subtitle">
 		</video>
 		<script src="https://cdn.jsdelivr.net/gh/BMSVieira/moovie.js@latest/js/moovie.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/hls.js/latest/hls.js"></script>
 	</center>
-	<div id="stream_id" style="display:none">{{ video_info['stream_id'] }}
+	<div id="stream_id" style="display:none">{{ media_info['stream_id'] }}
 	</div>
 	<script>
 		// dock a video quality control menu to moovie player
@@ -117,7 +117,7 @@
 		mainPlayer.video.addEventListener("loadeddata", (event) => {
 			mainPlayer.currentTime = 0 // set player from time 0
 		})
-		var stream_url = '/api/v1/videos/{{ video_info['id'] }}/stream/start'
+		var stream_url = '/api/v1/videos/{{ media_info['id'] }}/stream/start'
 		/* hls support */
 		if (Hls.isSupported()) {
 			var hls = new Hls();

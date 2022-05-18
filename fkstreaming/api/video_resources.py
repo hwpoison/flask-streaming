@@ -13,7 +13,7 @@ class videoDownload(Resource):
     @Auth.token_required
     def get(self, id):
         current_app.logger.info(f'\n[+]Sending video {id}\n')
-        path = media_manager.fetch_video_path(id)
+        path = media_manager.fetch_media_path(id)
         if path:
             return send_from_directory(
                 directory=path.parent,
@@ -35,7 +35,7 @@ class videoFolder(Resource):
 class videoThumb(Resource):
     @Auth.token_required
     def get(self, id):
-        info = media_manager.fetch_video_info(id)
+        info = media_manager.media_info(id)
         if info:
             return send_from_directory(
                 directory=media_manager.thumbnails_dir,
@@ -70,7 +70,7 @@ class videoSearch(Resource):
     def get(self, string):
         if len(string) < 3:
             raise SearchLengthError
-        result = media_manager.search_video_by_name(string)
+        result = media_manager.search_media_by_name(string)
 
         return result
 
@@ -78,7 +78,7 @@ class videoSearch(Resource):
 class videoInfo(Resource):
     @Auth.token_required
     def get(self, id):
-        info = media_manager.fetch_video_info(id)
+        info = media_manager.media_info(id)
         if info:
             return jsonify(info)
         else:
@@ -114,7 +114,7 @@ class videoStream(Resource):
     @Auth.token_required
     def get(self, id):
         current_token = Auth.get_current_token()
-        path = media_manager.fetch_video_path(id)
+        path = media_manager.fetch_media_path(id)
         manifiest = transcode_manager.new(path, current_token)
         print("===>", current_token, " stream started")
         if path:

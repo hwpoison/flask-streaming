@@ -99,6 +99,7 @@ main {
 	font-size: 1.5em;
 	text-shadow: 1px 1px 1px black;
 	padding-bottom: 10px;
+	text-align: center;
 }
 
 
@@ -113,4 +114,86 @@ main {
 .folder-title a:visited {
 	text-decoration: none;
 	color: white;
+}
+
+
+/* file card */
+
+#file-card {
+	transition: 0.5s;
+	background-color: black;
+	padding: 15px;
+	border-radius: 4px;
+	width: 200px;
+	height: 250px;
+	margin: 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: white;
+	text-decoration: none;
+	font-weight: bold;
+	box-shadow: 0 10px 10px -10px #000000;
+}
+
+#file-card:hover {
+	transition: 1s;
+	background-color: rgb(51, 51, 56);
+}
+
+#file-card a {
+	color: white;
+	text-decoration: none;
+}
+
+#file-card img {
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+	border-radius: 2px;
+}
+
+/* ----------*/
+
+
+#view-more-button {
+	align-self: center;
+	justify-self: center;
+	margin-top: 70px;
+}
+
+#view-more-button button {
+	transition: 0.5s;
+	text-decoration: none;
+	color: white;
+	background-color: rgb(13, 13, 14);
+	width: 90px;
+	border-radius: 13px;
+	height: 120px;
+	border: none;
+}
+
+#view-more-button button:hover {
+	transition: 1s;
+	background-color: rgb(24, 24, 31);
+	transform: translateX(10px);
+}
+
+
+#cover-music {
+	top:20%;
+	z-index:-99;
+	overflow: hidden;
+	border-radius: 10px;
+	box-shadow: 0 0 30px #ddd;
+	opacity:20%;
+	position:absolute;
+	width:30%;
+}
+
+
+@media screen and (max-width: 600px) {
+	#cover-music {
+		top:30%;
+		width: 60%;
+	}
 }

@@ -26,7 +26,7 @@ def home_page():
 def search():
     if request.method == 'POST':
         query = request.form.get('search_query')
-        result = media_manager.search_video_by_name(query)
+        result = media_manager.search_media_by_name(query)
         return render_template('search_result.html', result=result)
     abort(404)
 

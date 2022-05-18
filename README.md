@@ -3,9 +3,9 @@
 <p class="has-line-data" data-line-start="3" data-line-end="7">*Simple video folders navigation.<br>
 *Automatic directory update without restarting the server.<br>
 *Thumbnails generation<br>
-*Video streaming (hls)<br>
-*Great for old smart tv internet browsers
-*subtitles detection</p>
+*Video streaming (hls) with ffpmpeg and video quality control like youtube.<br>
+*Great for old smart tv internet browsers<br>
+*subtitles detection<br></p>
 <p class="has-line-data" data-line-start="8" data-line-end="10">Requirements:<br>
 ffmpeg framework: <a href="https://ffmpeg.org/download.html">https://ffmpeg.org/download.html</a></p>
 <p class="has-line-data" data-line-start="11" data-line-end="13">Just add directories of your videos in dirs.ini file, start the server and enjoy!<br>

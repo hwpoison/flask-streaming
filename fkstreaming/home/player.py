@@ -12,16 +12,16 @@ player = Blueprint('player', __name__,
 @player.route('/play/<int:video_id>', methods=['GET'])
 @Auth.token_required
 def getPlayer(video_id):
-    info = media_manager.fetch_video_info(video_id)
+    info = media_manager.media_info(video_id)
     if info:
-        return render_template('player/video_player.html', video_info=info)
+        return render_template('player/media_player.html', media_info=info)
     abort(404)
 
 @player.route('/play/<int:video_id>/stream', methods=['GET'])
 @Auth.token_required
 def getStream(video_id):
-    info = media_manager.fetch_video_info(video_id)
+    info = media_manager.media_info(video_id)
     info['stream_id'] = Auth.get_current_token()
     if info:
-        return render_template('player/video_player_stream.html', video_info=info)
+        return render_template('player/media_player_stream.html', media_info=info)
     abort(404)
